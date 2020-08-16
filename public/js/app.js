@@ -12,3 +12,13 @@ requestModal.addEventListener('click', e => {
     requestModal.classList.remove('open');
   }
 });
+
+// Invoke greeting function
+const button = document.querySelector('.call');
+button.addEventListener('click', () => {
+  // Get function reference from firebase
+  const greeting = firebase.functions().httpsCallable('greeting');
+  greeting({ name: 'Teerapat Prommarak' }).then(result => {
+    console.log(result.data);
+  });
+});
