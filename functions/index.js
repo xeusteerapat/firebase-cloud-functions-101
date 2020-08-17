@@ -24,6 +24,7 @@ exports.userDeleted = functions.auth.user().onDelete(user => {
 
 // http callable function (adding tutorial requests)
 exports.addRequest = functions.https.onCall((data, context) => {
+  const { text } = data;
   if (!context.auth) {
     throw new functions.https.HttpsError(
       'unauthenticated',
@@ -38,8 +39,15 @@ exports.addRequest = functions.https.onCall((data, context) => {
     );
   }
 
-  return admin.firestore().collection('requests').add({
-    text: data.text,
-    upvotes: 0,
-  });
+  return admin
+    .firestore()
+    .collection('requests')
+    .add({
+      text,
+      upvotes: 0,
+    })
+    .then(() => 'new request added')
+    .catch(() => {
+      throw new functions.https.HttpsError('internal', 'request not added');
+    });
 });
