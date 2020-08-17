@@ -14,11 +14,11 @@ requestModal.addEventListener('click', e => {
 });
 
 // Invoke greeting function
-const button = document.querySelector('.call');
-button.addEventListener('click', () => {
-  // Get function reference from firebase
-  const greeting = firebase.functions().httpsCallable('greeting');
-  greeting({ name: 'Teerapat Prommarak' }).then(result => {
-    console.log(result.data);
-  });
-});
+// const button = document.querySelector('.call');
+// button.addEventListener('click', () => {
+// Get function reference from firebase
+//   const greeting = firebase.functions().httpsCallable('greeting');
+//   greeting({ name: 'Teerapat Prommarak' }).then(result => {
+//     console.log(result.data);
+//   });
+// });
