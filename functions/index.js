@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const { firebaseConfig } = require('firebase-functions');
 
 // http request and response random number
 exports.randomNumber = functions.https.onRequest((req, res) => {
