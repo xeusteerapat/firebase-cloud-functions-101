@@ -51,3 +51,38 @@ exports.addRequest = functions.https.onCall((data, context) => {
       throw new functions.https.HttpsError('internal', 'request not added');
     });
 });
+
+// Upvote callable function
+exports.upvote = functions.https.onCall((data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Please login before add requests'
+    );
+  }
+
+  const user = admin.firestore().collection('users').doc(context.auth.uid);
+  const request = admin.firestore().collection('requests').doc(data.id);
+
+  return user.get().then(doc => {
+    // check user hasn't already upvoted
+    if (doc.data().upvotedOn.includes(data.id)) {
+      throw new functions.https.HttpsError(
+        'failed-precondition',
+        'You can only upvote something once'
+      );
+    }
+
+    // update user array
+    return user
+      .update({
+        upvotedOn: [...doc.data.upvotedOn, data.id],
+      })
+      .then(() => {
+        // update vote on the request
+        return request.update({
+          upvotes: admin.firestore.FieldValue.increment(1),
+        });
+      });
+  });
+});
