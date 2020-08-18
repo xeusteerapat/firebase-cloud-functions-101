@@ -65,21 +65,21 @@ exports.upvote = functions.https.onCall((data, context) => {
   const request = admin.firestore().collection('requests').doc(data.id);
 
   return user.get().then(doc => {
-    // check user hasn't already upvoted
+    // check thew user hasn't already upvoted
     if (doc.data().upvotedOn.includes(data.id)) {
       throw new functions.https.HttpsError(
         'failed-precondition',
-        'You can only upvote something once'
+        'You can only vote something up once'
       );
     }
 
-    // update user array
+    // update the array in user document
     return user
       .update({
-        upvotedOn: [...doc.data.upvotedOn, data.id],
+        upvotedOn: [...doc.data().upvotedOn, data.id],
       })
       .then(() => {
-        // update vote on the request
+        // update the votes on the request
         return request.update({
           upvotes: admin.firestore.FieldValue.increment(1),
         });
